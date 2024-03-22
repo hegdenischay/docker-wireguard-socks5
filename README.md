@@ -1,4 +1,8 @@
-# Fork of 
+# Fork of curve25519xsalsa20poly1305/docker-wireguard-socks5
+
+⚠️ WORK IN PROGRESS⚠️
+
+This fork changes the library used to [wzshiming/socks5](https://github.com/wzshiming/socks5). In addition, qbittorrent is also installed inside the docker container because the socks5 proxy provided still doesn't seem to work well. This is posted to github to help others debug the issues with the implementation.
 
 # WireGuard Docker Tunnel to SOCKS5 Server
 

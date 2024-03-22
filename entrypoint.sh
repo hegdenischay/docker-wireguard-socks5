@@ -60,8 +60,14 @@ else
     gen_conf > /etc/wireguard/wg.conf
 fi
 
-wg-quick up wg
+wg-quick up wg &
+sleep 5
+# environment settings
+# HOME="/config" \
+XDG_CONFIG_HOME="/config" \
+XDG_DATA_HOME="/config"
 
+qbittorrent-nox &
 spawn socks5
 
 SUBNET=$(ip -o -f inet addr show dev eth0 | awk '{print $4}')

@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
-	"net"
+	// "net"
 	"os"
-	"os/exec"
+	// "os/exec"
 
-	"github.com/armon/go-socks5"
+	// "github.com/armon/go-socks5"
+	"github.com/wzshiming/socks5"
 	"github.com/caarlos0/env"
 )
 
@@ -24,40 +25,25 @@ func main() {
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
+	// initialize logger
+	logger := log.New(os.Stdout, "", log.LstdFlags)
 
 	//Initialize socks5 config
-	socsk5conf := &socks5.Config{
-		Logger: log.New(os.Stdout, "", log.LstdFlags),
+	socks5conf := &socks5.Server{
+		Logger: logger,
 	}
 
 	if cfg.User+cfg.Password != "" {
-		creds := socks5.StaticCredentials{
-			cfg.User: cfg.Password,
-		}
-		cator := socks5.UserPassAuthenticator{Credentials: creds}
-		socsk5conf.AuthMethods = []socks5.Authenticator{cator}
+		// creds := socks5.StaticCredentials{
+		// 	cfg.User: cfg.Password,
+		// }
+		// cator := socks5.UserPassAuthenticator{Credentials: creds}
+		socks5conf.Authentication = socks5.UserAuth(cfg.User, cfg.Password)
 	}
 
-	server, err := socks5.New(socsk5conf)
+	err = socks5conf.ListenAndServe("tcp", ":"+cfg.Port)
 	if err != nil {
-		log.Fatal(err)
-	}
 
-	l, err := net.Listen("tcp", ":"+cfg.Port)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Start listening proxy service on port %s\n", cfg.Port)
-
-	if cfg.Up != "" {
-		err = exec.Command(cfg.Up).Start()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	if err := server.Serve(l); err != nil {
-		log.Fatal(err)
+		logger.Println(err)
 	}
 }

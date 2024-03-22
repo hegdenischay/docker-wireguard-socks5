@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+    wg-socks5-build:
+        restart: always
+        ports:
+            - 7000:1080
+            - 8080:8080
+        devices:
+            - /dev/net/tun
+        cap_add:
+            - NET_ADMIN
+        privileged: true
+        volumes:
+            - ${PWD}:/vpn:ro
+        environment:
+            WIREGUARD_CONFIG: /vpn/wg1.conf
+        image: wg-socks5-build:latest
+
+volumes:
+  config:
